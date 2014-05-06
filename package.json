@@ -1,0 +1,9 @@
+{
+	"name": "Nightbot",
+	"description": "IRC Bot",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"irc": "0.x"
+	}
+}
