@@ -6,6 +6,8 @@ var config =
 }
 
 var irc = require("irc");
+var quotes = require("./quotes");
+
 
 var bot = new irc.Client(config.server, config.botName,{
 	channels: config.channels
@@ -13,8 +15,21 @@ var bot = new irc.Client(config.server, config.botName,{
 
 bot.addListener("message#", function(from, to, text, message)
 {
-	console.log(from);
-	console.log(to);
-	console.log(text);
-	console.log("%j", message);
+	if(from == "Nighthawk")
+	{
+		var commands = text.split(" ");
+		if(commands[0] == "!addquote")
+		{
+			quotes.add(text.substr(commands[0].length + 1));
+			bot.say(to, "Quote added");
+		}
+		else if(commands[0] == "!quote")
+		{
+			console.log()
+			quotes.get(new RegExp(text.substr(commands[0].length +1)), function(result)
+				{
+					bot.say(to, result.quote);
+				});
+		}
+	}
 });
