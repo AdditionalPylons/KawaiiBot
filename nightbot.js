@@ -7,13 +7,14 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
   	// yay!
+  	console.log("mongoose loaded");
 	bootstrap();
 });
 
 
 var config = 
 {
-	channels: ["#bots"],
+	channels: ["#flux"],
 	server: "irc.flux.cd",
 	botName: "KawaiiBot"
 }
@@ -124,4 +125,7 @@ var bootstrap = function()
 		}
 	});
 
+	bot.addListener('error', function(message) {
+    	console.log('error: ', message);
+	});
 }
