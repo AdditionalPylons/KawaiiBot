@@ -1,14 +1,5 @@
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/quotes');
-
-var db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-  // yay!
-});
-
 var quoteSchema = mongoose.Schema(
 {
 	quote: String,
@@ -44,4 +35,9 @@ exports.reset = function(callback)
 		console.log('collection removed');
 		callback();
 	});
+}
+
+exports.init = function(commandCenter)
+{
+	
 }
