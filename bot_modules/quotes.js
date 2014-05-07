@@ -24,7 +24,6 @@ var get = function(expr, callback)
 	{
 		if(expr[0] == "#")
 		{
-			debugger;
 			Quote.findById(expr.substr(1), function(err, result)
 			{
 				if(err) return console.error(err);
