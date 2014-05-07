@@ -2,7 +2,7 @@ var config =
 {
 	channels: ["#flux"],
 	server: "irc.flux.cd",
-	botName: "Nightbot"
+	botName: "KawaiiBot"
 }
 
 var irc = require("irc");
@@ -18,18 +18,48 @@ bot.addListener("message#", function(from, to, text, message)
 	if(from == "Nighthawk")
 	{
 		var commands = text.split(" ");
-		if(commands[0] == "!addquote")
+		var cmd = commands[0];
+		switch(cmd)
 		{
-			quotes.add(text.substr(commands[0].length + 1));
-			bot.say(to, "Quote added");
-		}
-		else if(commands[0] == "!quote")
-		{
-			console.log()
-			quotes.get(new RegExp(text.substr(commands[0].length +1)), function(result)
+			case ".addquote":
+			{
+				if(commands.length > 1)
 				{
-					bot.say(to, result.quote);
-				});
+					quotes.add(text.substr(commands[0].length + 1));
+					bot.say(to, "Quote added");
+				}
+			}break;
+			case ".quote":
+			{
+				console.log()
+				quotes.get(text.substr(commands[0].length +1), function(result)
+					{
+						if(result != null)
+						{
+							bot.say(to, result.quote);
+						}
+						else
+						{
+							bot.say(to, "No matches found");
+						}
+					});
+			}break;
+			case ".nuke":
+			{
+				switch(commands[1])
+				{
+					case "quotes":
+					{
+						quotes.reset(function() 
+						{
+							bot.say(to, "Existing quotes have been vaporized.");
+						})
+					}break;
+					default:
+					{
+					}
+				}
+			}break;
 		}
 	}
 });

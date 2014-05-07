@@ -25,8 +25,10 @@ exports.add = function(quoteMsg)
 		});
 	};
 
-exports.get =  function(regex, callback)
+exports.get = function(regex, callback)
 	{
+		regex = regex.replace(/^\s+|\s+$/g,'');
+		regex = new RegExp(regex);
 		Quote.find({quote: regex}, function(err, results) 
 			{
 				if(err) return console.error(err);
@@ -35,3 +37,11 @@ exports.get =  function(regex, callback)
 	};
 
 exports.find = exports.get;
+
+exports.reset = function(callback)
+{
+	Quote.remove({}, function(err) {
+		console.log('collection removed');
+		callback();
+	});
+}
