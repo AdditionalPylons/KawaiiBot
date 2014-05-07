@@ -5,8 +5,46 @@ var accessSchema = mongoose.Schema(
 	username: String,
 	hostname: String,
 	permissions: {type: Number, default: 0},
-	allowedModules: [String]
+	allowedModules: [mongoose.Schema.Types.Mixed]
 })
+
+accessSchema.methods.getModulePermissions = function(moduleName)
+{
+	var mod = null;
+	for (var i = this.allowedModules.length - 1; i >= 0; i--) {
+		if(this.allowedModules[i].key == moduleName)
+		{
+			mod = this.allowedModules[i];
+			break;
+		}
+	};
+
+	return mod.object;
+}
+
+accessSchema.methods.setModulePermissions = function(moduleName, object)
+{
+	var idx = null;
+	for (var i = this.allowedModules.length - 1; i >= 0; i--) {
+		if(this.allowedModules[i].key == moduleName)
+		{
+			idx = i;
+			break;
+		}
+	};
+	if(idx != null)
+	{
+		this.allowedModules[i].object = object;
+	}
+	else
+	{
+		this.allowedModules.push({key: moduleName, object: object});
+	}
+
+	this.save(function(err, res) {
+		if(err) console.error(err);
+	});
+}
 
 var Access = mongoose.model('Access', accessSchema);
 
@@ -24,7 +62,7 @@ var addUserHandler = function(irc, from, to, text, message)
 	var user = message.user;
 	var host = message.host;
 
-	userRegistered(user, host, function(result)
+	userRegistration(user, host, function(result)
 	{
 		if(result != null && (result.permissions & AccessEnum.EDITUSERS))
 		{
@@ -79,7 +117,7 @@ var addUserHandler = function(irc, from, to, text, message)
 var deleteUserHandler = function(irc, from, to, text, message)
 {
 	var commands = text.split(" ");
-	userRegistered(message.user, message.host, function(res)
+	userRegistration(message.user, message.host, function(res)
 	{
 		if(res && (res.permissions & AccessEnum.EDITUSERS))
 		{
@@ -156,7 +194,7 @@ var registerUser = function(username, hostname, permissions, allowedModules, cal
 	if(allowedModules == null)
 		allowedModules = [];
 
-	userRegistered(username, hostname, function(res)
+	userRegistration(username, hostname, function(res)
 	{
 		if(!res)
 		{
@@ -177,7 +215,7 @@ var registerUser = function(username, hostname, permissions, allowedModules, cal
 
 exports.registerUser = registerUser;
 
-var userRegistered = function(username, hostname, callback)
+var userRegistration = function(username, hostname, callback)
 {
 	Access.findOne({username: username, hostname: hostname}, function(err, a)
 	{
@@ -186,13 +224,13 @@ var userRegistered = function(username, hostname, callback)
 	});
 };
 
-exports.userRegistered = userRegistered;
+exports.userRegistration = userRegistration;
 
 var nukeHandler = function(irc, from, to, text, message)
 {
 	if(text.split(" ")[1] == "access")
 	{
-		userRegistered(message.user, message.host, function(res)
+		userRegistration(message.user, message.host, function(res)
 		{
 			if(res && (res.permissions & AccessEnum.EDITUSERS))
 			{
@@ -218,7 +256,9 @@ exports.AccessEnum = AccessEnum;
 
 exports.destroy = function(commandCenter)
 {
-
+	commandCenter.unregisterCommand('.adduser');
+	commandCenter.unregisterCommand('.deluser');
+	commandCenter.unhookCommand('.nuke', nukeHandler);
 }
 
 var seedAccess = function()

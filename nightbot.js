@@ -1,8 +1,11 @@
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
 
 mongoose.connect('mongodb://localhost/nightbot');
 
 var db = mongoose.connection;
+
+autoIncrement.initialize(db);
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
@@ -21,8 +24,8 @@ var config =
 
 var irc = require("irc");
 
-var moduleList = ['quotes', 'access'];
-
+var moduleList = ['access', 'quotes'];
+// i should fix this
 
 var bot = new irc.Client(config.server, config.botName,{
 	channels: config.channels
@@ -62,13 +65,13 @@ var CommandCenter =
 {
 	getModule: function(moduleName)
 	{
-		if(moduleName in LoadModules)
+		if(moduleName in LoadedModules)
 		{
-			return LoadModules[moduleName];
+			return LoadedModules[moduleName];
 		}
 		else
 		{
-			return null
+			return null;
 		}
 	},
 	registerCommand: function(command, callback)
