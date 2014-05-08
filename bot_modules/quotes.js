@@ -11,6 +11,10 @@ quoteSchema.plugin(autoIncrement.plugin, 'Quote');
 
 var Quote = mongoose.model('Quote', quoteSchema);
 
+function isChan (argument) {
+	return argument[0] == "#"
+}
+
 var add = function(quoteMsg, callback)
 	{
 		var q = new Quote({quote: quoteMsg});
@@ -78,7 +82,7 @@ var addQuoteHandler = function(irc, from, to, text, message)
 				{
 					if(q)
 					{
-						irc.say(to, "Quote #" + q.id + " added.");
+						irc.say(isChan(to) ? to : from, "Quote #" + q.id + " added.");
 					}
 				});
 		}
@@ -95,10 +99,10 @@ var quoteHandler = function(irc, from, to, text, message)
 	get(text.substr(commands[0].length+1), function(quote)
 	{
 		if(quote)
-			irc.say(to, "#" + quote.id + ": " + quote.quote);
+			irc.say(isChan(to) ? to : from, "#" + quote.id + ": " + quote.quote);
 		else
 		{
-			irc.say(to, "No results.");
+			irc.say(isChan(to) ? to : from, "No results.");
 		}
 	});
 }
@@ -117,17 +121,17 @@ var deleteQuoteHandler = function(irc, from, to, text, message)
 				{
 					if(result)
 					{
-						irc.say(to, "Quote #" + id + " deleted.");
+						irc.say(isChan(to) ? to : from, "Quote #" + id + " deleted.");
 					}
 					else
 					{
-						irc.say(to, "Quote #" + id + " does not exist.");
+						irc.say(isChan(to) ? to : from, "Quote #" + id + " does not exist.");
 					}
 				});	
 			}
 			else
 			{
-				irc.say(to, "Invalid id.");
+				irc.say(isChan(to) ? to : from, "Invalid id.");
 			}
 		}
 	})

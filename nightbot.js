@@ -58,7 +58,69 @@ var nukeHandler = function(irc, from, to, text, message)
 	}
 }
 
-var RegisteredCommands = {'.nuke': [nukeHandler]}
+var joinHandler = function(irc, from, to, text, message)
+{
+	var commands = text.split(" ");
+
+	var access = CommandCenter.getModule('access');
+	access.userRegistration(message.user, message.host, function(res)
+	{
+		if(res && (res.permissions & access.AccessEnum.ADMIN))
+		{
+			irc.join(commands[1], function(){});
+		}
+		else
+		{
+			irc.notice(from, "You don't have permission to do that.");
+		}
+	});
+}
+ var partHandler = function(irc, from, to, text, message)
+ {
+	var commands = text.split(" ");
+	var access = CommandCenter.getModule('access');
+	access.userRegistration(message.user, message.host, function(res)
+	{
+		if(res && (res.permissions & access.AccessEnum.ADMIN))
+		{
+			if(commands.length > 1)
+				irc.part(commands[1]);
+			else
+			{
+				irc.part(to);
+			}
+		}
+		else
+		{
+			irc.notice(from, "You don't have permission to do that.");
+		}
+	});
+ }
+
+ var quitHandler = function(irc, from, to, text, message)
+ {
+ 	var commands = text.split(" ");
+	var access = CommandCenter.getModule('access');
+	access.userRegistration(message.user, message.host, function(res)
+	{
+		if(res && (res.permissions & access.AccessEnum.ADMIN))
+		{
+			irc.disconnect("Sayonara!");
+		}
+		else
+		{
+			irc.notice(from, "You don't have permission to do that.");
+		}
+	});
+ }
+
+var RegisteredCommands = 
+{
+	'.nuke': nukeHandler,
+	'.join': joinHandler,
+	'.part': partHandler,
+	'.quit': quitHandler
+}
 
 
 var CommandCenter = 
@@ -108,7 +170,7 @@ var bootstrap = function()
 {
 	// entry point for everything essentially
 
-	bot.addListener("message#", function(from, to, text, message)
+	bot.addListener("message", function(from, to, text, message)
 	{
 		var commands = text.split(" ");
 		var handler = RegisteredCommands[commands[0]];

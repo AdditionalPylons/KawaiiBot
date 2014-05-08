@@ -53,7 +53,12 @@ var Access = mongoose.model('Access', accessSchema);
 var AccessEnum = 
 {
 	USECOMMANDS: 1,
-	EDITUSERS: 2
+	EDITUSERS: 2,
+	ADMIN: 0x80000000
+}
+
+function isChan (argument) {
+	return argument[0] == "#"
 }
 
 var addUserHandler = function(irc, from, to, text, message)
@@ -73,10 +78,10 @@ var addUserHandler = function(irc, from, to, text, message)
 				registerUser(user, host, AccessEnum.USECOMMANDS, commands.slice(2), function(axx)
 				{
 					if(axx)
-						irc.say(to, "User " + commands[1] + " added.");
+						irc.say(isChan(to) ? to : from, "User " + commands[1] + " added.");
 					else
 					{
-						irc.say(to, "User " + commands[1] + " is already registered.");
+						irc.say(isChan(to) ? to : from, "User " + commands[1] + " is already registered.");
 					}
 				});
 			}
@@ -92,16 +97,16 @@ var addUserHandler = function(irc, from, to, text, message)
 						registerUser(user, host, AccessEnum.USECOMMANDS, commands.slice(2), function(axx)
 						{
 							if(axx)
-								irc.say(to, "User " + user + "@" + host + " added.");
+								irc.say(isChan(to) ? to : from, "User " + user + "@" + host + " added.");
 							else
 							{
-								irc.say(to, "User " + user + "@" + host + " is already registered.");
+								irc.say(isChan(to) ? to : from, "User " + user + "@" + host + " is already registered.");
 							}
 						});
 					}
 					else
 					{
-						irc.say(to, "User '" + whois.nick + "'' not found.");
+						irc.say(isChan(to) ? to : from, "User '" + whois.nick + "'' not found.");
 					}
 
 				});
@@ -129,11 +134,11 @@ var deleteUserHandler = function(irc, from, to, text, message)
 				{
 					if(axx)
 					{
-						irc.say(to, "User " + commands[1] + " deleted.");						
+						irc.say(isChan(to) ? to : from, "User " + commands[1] + " deleted.");						
 					}
 					else
 					{
-						irc.say(to, "User matching " + commands[1] + " not found.");
+						irc.say(isChan(to) ? to : from, "User matching " + commands[1] + " not found.");
 					}
 				});
 			}
@@ -150,17 +155,17 @@ var deleteUserHandler = function(irc, from, to, text, message)
 						{
 							if(axx)
 							{
-								irc.say(to, "User " + user + "@" + host + " deleted.");
+								irc.say(isChan(to) ? to : from, "User " + user + "@" + host + " deleted.");
 							}
 							else
 							{
-								irc.say(to, "User " + whois.nick + " is not registered.")
+								irc.say(isChan(to) ? to : from, "User " + whois.nick + " is not registered.")
 							}
 						});
 					}
 					else
 					{
-						irc.say(to, "User " + whois.nick + " not found.");
+						irc.say(isChan(to) ? to : from, "User " + whois.nick + " not found.");
 					}
 
 				});
@@ -235,7 +240,7 @@ var nukeHandler = function(irc, from, to, text, message)
 			if(res && (res.permissions & AccessEnum.EDITUSERS))
 			{
 				seedAccess();
-				irc.say(to, "Access list has been obliterated.");
+				irc.say(isChan(to) ? to : from, "Access list has been obliterated.");
 			}
 			else
 			{
@@ -267,7 +272,7 @@ var seedAccess = function()
 		{
 			console.log("access reset");
 		});
-	registerUser('Nighthawk', 'phusion.io', AccessEnum.USECOMMANDS | AccessEnum.EDITUSERS, null, function(r)
+	registerUser('Nighthawk', 'phusion.io', AccessEnum.USECOMMANDS | AccessEnum.EDITUSERS | AccessEnum.ADMIN, null, function(r)
 		{
 			console.log("Access db seeded");
 		});
