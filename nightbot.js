@@ -31,14 +31,14 @@ var utils = require('utils');
 
 var config = 
 {
-	channels: ["#flux"],
+	channels: ["#bots"],
 	server: "irc.flux.cd",
-	botName: "KawaiiBot"
+	botName: "LocalBot"
 }
 
 var irc = require("irc");
 
-var moduleList = ['access', 'quotes'];
+var moduleList = ['access', 'quotes', 'pantsu'];
 // i should fix this
 
 var bot = new irc.Client(config.server, config.botName,{
@@ -93,22 +93,22 @@ var joinHandler = function(irc, from, to, text, message)
  {
 	var commands = utils.splitText(text);
 	var access = CommandCenter.getModule('access');
-	access.userRegistration(message.user, message.host, function(res)
-	{
-		if(res && (res.permissions & access.AccessEnum.ADMIN))
+		access.userRegistration(message.user, message.host, function(res)
 		{
-			if(commands.length > 0)
-				irc.part(commands[0]);
+			if(res && (res.permissions & access.AccessEnum.ADMIN))
+			{
+				if(commands.length > 0)
+					irc.part(commands[0]);
+				else
+				{
+					irc.part(to);
+				}
+			}
 			else
 			{
-				irc.part(to);
+				irc.notice(from, "You don't have permission to do that.");
 			}
-		}
-		else
-		{
-			irc.notice(from, "You don't have permission to do that.");
-		}
-	});
+		});
  }
 
  var quitHandler = function(irc, from, to, text, message)
