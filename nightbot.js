@@ -11,7 +11,20 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
   	// yay!
   	console.log("mongoose loaded");
-	bootstrap();
+  	process.argv.forEach(function(val,index,array) {
+  		if(index == 2)
+  		{
+  			if(val == "register")
+  			{
+  				var axx = require('./bot_modules/access');
+  				axx.registerUser(array[3], array[4], axx.AccessEnum.ADMIN | axx.AccessEnum.USECOMMANDS | axx.AccessEnum.EDITUSERS, null, function(){
+  					console.log("Seeded root user");
+  				});
+  				return;
+  			}
+  		}
+  	});
+  	bootstrap();
 });
 
 
