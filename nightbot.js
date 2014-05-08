@@ -27,6 +27,7 @@ db.once('open', function callback () {
   	bootstrap();
 });
 
+var utils = require('utils');
 
 var config = 
 {
@@ -64,23 +65,23 @@ var LoadModule = function(moduleName)
 
 var nukeHandler = function(irc, from, to, text, message)
 {
-	var commands = text.split(" ");
-	if(commands.length <= 1)
+	var commands = utils.splitText(text);
+	if(commands.length <= 0)
 	{
-		irc.say(to, "You must specify something to obliterate.");
+		irc.say(utils.reply(from,to), "You must specify something to obliterate.");
 	}
 }
 
 var joinHandler = function(irc, from, to, text, message)
 {
-	var commands = text.split(" ");
+	var commands = utils.splitText(text);
 
 	var access = CommandCenter.getModule('access');
 	access.userRegistration(message.user, message.host, function(res)
 	{
 		if(res && (res.permissions & access.AccessEnum.ADMIN))
 		{
-			irc.join(commands[1], function(){});
+			irc.join(commands[0], function(){});
 		}
 		else
 		{
@@ -90,14 +91,14 @@ var joinHandler = function(irc, from, to, text, message)
 }
  var partHandler = function(irc, from, to, text, message)
  {
-	var commands = text.split(" ");
+	var commands = utils.splitText(text);
 	var access = CommandCenter.getModule('access');
 	access.userRegistration(message.user, message.host, function(res)
 	{
 		if(res && (res.permissions & access.AccessEnum.ADMIN))
 		{
-			if(commands.length > 1)
-				irc.part(commands[1]);
+			if(commands.length > 0)
+				irc.part(commands[0]);
 			else
 			{
 				irc.part(to);
@@ -112,7 +113,7 @@ var joinHandler = function(irc, from, to, text, message)
 
  var quitHandler = function(irc, from, to, text, message)
  {
- 	var commands = text.split(" ");
+ 	var commands = utils.splitText(text);
 	var access = CommandCenter.getModule('access');
 	access.userRegistration(message.user, message.host, function(res)
 	{
@@ -131,7 +132,7 @@ var joinHandler = function(irc, from, to, text, message)
  {
  	var commands = [];
  	for (var k in RegisteredCommands) commands.push(k);
- 	irc.say(to[0] == "#" ? to : from, commands.join(", "));
+ 	irc.say(utils.reply(from,to), commands.join(", "));
  }
 
 var RegisteredCommands = 

@@ -1,4 +1,7 @@
 var mongoose = require('mongoose');
+
+var utils = require('utils');
+
 var autoIncrement = require('mongoose-auto-increment');
 
 var quoteSchema = mongoose.Schema(
@@ -10,10 +13,6 @@ var quoteSchema = mongoose.Schema(
 quoteSchema.plugin(autoIncrement.plugin, 'Quote');
 
 var Quote = mongoose.model('Quote', quoteSchema);
-
-function isChan (argument) {
-	return argument[0] == "#"
-}
 
 var add = function(quoteMsg, callback)
 	{
@@ -75,14 +74,14 @@ var addQuoteHandler = function(irc, from, to, text, message)
 {
 	Access.userRegistration(message.user, message.host, function(registration)
 	{
-		var commands = text.split(" ");
+		var commands = utils.splitText(text);
 		if(registration && (registration.permissions & Access.AccessEnum.USECOMMANDS))
 		{
-			add(text.substr(commands[0].length + 1), function(q)
+			add(utils.trimCommandFromText(text), function(q)
 				{
 					if(q)
 					{
-						irc.say(isChan(to) ? to : from, "Quote #" + q.id + " added.");
+						irc.say(utils.reply(from,to), "Quote #" + q.id + " added.");
 					}
 				});
 		}
@@ -95,43 +94,43 @@ var addQuoteHandler = function(irc, from, to, text, message)
 
 var quoteHandler = function(irc, from, to, text, message)
 {
-	var commands = text.split(" ");
-	get(text.substr(commands[0].length+1), function(quote)
+	var commands = utils.splitText(text);
+	get(utils.trimCommandFromText(text), function(quote)
 	{
 		if(quote)
-			irc.say(isChan(to) ? to : from, "#" + quote.id + ": " + quote.quote);
+			irc.say(utils.reply(from,to), "#" + quote.id + ": " + quote.quote);
 		else
 		{
-			irc.say(isChan(to) ? to : from, "No results.");
+			irc.say(utils.reply(from,to), "No results.");
 		}
 	});
 }
 
 var deleteQuoteHandler = function(irc, from, to, text, message)
 {
-	var commands = text.split(" ");
+	var commands = utils.splitText(text);
 	Access.userRegistration(message.user, message.host, function(access)
 	{
 		if(access && (access.permissions & Access.AccessEnum.USECOMMANDS))
 		{
-			var id = commands[1].match(/[0-9]+$/)[0];
+			var id = commands[0].match(/[0-9]+$/)[0];
 			if(id != null)
 			{
 				remove(id, function(result)
 				{
 					if(result)
 					{
-						irc.say(isChan(to) ? to : from, "Quote #" + id + " deleted.");
+						irc.say(utils.reply(from,to), "Quote #" + id + " deleted.");
 					}
 					else
 					{
-						irc.say(isChan(to) ? to : from, "Quote #" + id + " does not exist.");
+						irc.say(utils.reply(from,to), "Quote #" + id + " does not exist.");
 					}
 				});	
 			}
 			else
 			{
-				irc.say(isChan(to) ? to : from, "Invalid id.");
+				irc.say(utils.reply(from,to), "Invalid id.");
 			}
 		}
 	})

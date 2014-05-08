@@ -1,3 +1,5 @@
+var utils = require('utils');
+
 var mongoose = require('mongoose');
 
 var accessSchema = mongoose.Schema(
@@ -57,13 +59,9 @@ var AccessEnum =
 	ADMIN: 0x80000000
 }
 
-function isChan (argument) {
-	return argument[0] == "#"
-}
-
 var addUserHandler = function(irc, from, to, text, message)
 {
-	var commands = text.split(" ");
+	var commands = utils.splitText(text);
 	var user = message.user;
 	var host = message.host;
 
@@ -71,42 +69,42 @@ var addUserHandler = function(irc, from, to, text, message)
 	{
 		if(result != null && (result.permissions & AccessEnum.EDITUSERS))
 		{
-			if(commands[1].match(/^[a-zA-Z0-9|_]+\@[a-zA-Z0-9|_.]+$/))
+			if(commands[0].match(/^[a-zA-Z0-9|_]+\@[a-zA-Z0-9|_.]+$/))
 			{
-				var user = commands[1].split("@")[0];
-				var host = commands[1].split("@")[1];
+				var user = commands[0].split("@")[0];
+				var host = commands[0].split("@")[1];
 				registerUser(user, host, AccessEnum.USECOMMANDS, commands.slice(2), function(axx)
 				{
 					if(axx)
-						irc.say(isChan(to) ? to : from, "User " + commands[1] + " added.");
+						irc.say(utils.reply(from,to), "User " + commands[0] + " added.");
 					else
 					{
-						irc.say(isChan(to) ? to : from, "User " + commands[1] + " is already registered.");
+						irc.say(utils.reply(from,to), "User " + commands[0] + " is already registered.");
 					}
 				});
 			}
 			else
 			{
-				irc.whois(commands[1], function(whois)
+				irc.whois(commands[0], function(whois)
 				{
 					if(whois.user != null && whois.host != null)
 					{
 						var user = whois.user;
 						var host = whois.host;
 
-						registerUser(user, host, AccessEnum.USECOMMANDS, commands.slice(2), function(axx)
+						registerUser(user, host, AccessEnum.USECOMMANDS, commands.slice(1), function(axx)
 						{
 							if(axx)
-								irc.say(isChan(to) ? to : from, "User " + user + "@" + host + " added.");
+								irc.say(utils.reply(from,to), "User " + user + "@" + host + " added.");
 							else
 							{
-								irc.say(isChan(to) ? to : from, "User " + user + "@" + host + " is already registered.");
+								irc.say(utils.reply(from,to), "User " + user + "@" + host + " is already registered.");
 							}
 						});
 					}
 					else
 					{
-						irc.say(isChan(to) ? to : from, "User '" + whois.nick + "'' not found.");
+						irc.say(utils.reply(from,to), "User '" + whois.nick + "'' not found.");
 					}
 
 				});
@@ -121,30 +119,31 @@ var addUserHandler = function(irc, from, to, text, message)
 
 var deleteUserHandler = function(irc, from, to, text, message)
 {
-	var commands = text.split(" ");
+	var commands = utils.splitText(text);
+
 	userRegistration(message.user, message.host, function(res)
 	{
 		if(res && (res.permissions & AccessEnum.EDITUSERS))
 		{
-			if(commands[1].match(/^[a-zA-Z0-9|_]+\@[a-zA-Z0-9|_.]+$/))
+			if(commands[0].match(/^[a-zA-Z0-9|_]+\@[a-zA-Z0-9|_.]+$/))
 			{
-				var user = commands[1].split("@")[0];
-				var host = commands[1].split("@")[1];
-				registerUser(user, host, function(axx)
+				var user = commands[0].split("@")[0];
+				var host = commands[0].split("@")[1];
+				unregisterUser(user, host, function(axx)
 				{
 					if(axx)
 					{
-						irc.say(isChan(to) ? to : from, "User " + commands[1] + " deleted.");						
+						irc.say(utils.reply(from,to), "User " + commands[0] + " deleted.");						
 					}
 					else
 					{
-						irc.say(isChan(to) ? to : from, "User matching " + commands[1] + " not found.");
+						irc.say(utils.reply(from,to), "User matching " + commands[0] + " not found.");
 					}
 				});
 			}
 			else
 			{
-				irc.whois(commands[1], function(whois)
+				irc.whois(commands[0], function(whois)
 				{
 					if(whois.user != null && whois.host != null)
 					{
@@ -155,17 +154,17 @@ var deleteUserHandler = function(irc, from, to, text, message)
 						{
 							if(axx)
 							{
-								irc.say(isChan(to) ? to : from, "User " + user + "@" + host + " deleted.");
+								irc.say(utils.reply(from,to), "User " + user + "@" + host + " deleted.");
 							}
 							else
 							{
-								irc.say(isChan(to) ? to : from, "User " + whois.nick + " is not registered.")
+								irc.say(utils.reply(from,to), "User " + whois.nick + " is not registered.")
 							}
 						});
 					}
 					else
 					{
-						irc.say(isChan(to) ? to : from, "User " + whois.nick + " not found.");
+						irc.say(utils.reply(from,to), "User " + whois.nick + " not found.");
 					}
 
 				});
@@ -240,7 +239,7 @@ var nukeHandler = function(irc, from, to, text, message)
 			if(res && (res.permissions & AccessEnum.EDITUSERS))
 			{
 				seedAccess();
-				irc.say(isChan(to) ? to : from, "Access list has been obliterated.");
+				irc.say(utils.reply(from,to), "Access list has been obliterated.");
 			}
 			else
 			{

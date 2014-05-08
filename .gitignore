@@ -1,4 +1,6 @@
-node_modules/
+node_modules/irc
+node_modules/mongoose
+node_modules/mongoose-auto-increment
 
 #################
 ## Eclipse
