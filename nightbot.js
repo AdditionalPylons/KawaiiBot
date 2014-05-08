@@ -114,12 +114,20 @@ var joinHandler = function(irc, from, to, text, message)
 	});
  }
 
+ var listCommandsHandler = function(irc, from, to, text, message)
+ {
+ 	var commands = [];
+ 	for (var k in RegisteredCommands) commands.push(k);
+ 	irc.say(to[0] == "#" ? to : from, commands.join(", "));
+ }
+
 var RegisteredCommands = 
 {
 	'.nuke': nukeHandler,
 	'.join': joinHandler,
 	'.part': partHandler,
-	'.quit': quitHandler
+	'.quit': quitHandler,
+	'.commands' : listCommandsHandler
 }
 
 

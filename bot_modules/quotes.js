@@ -38,7 +38,7 @@ var get = function(expr, callback)
 		{
 			var idmatch = expr.match(/[0-9]+$/);
 			expr = expr.replace(/^\s+|\s+$/g,'');
-			expr = new RegExp(expr);
+			expr = new RegExp(expr, 'i');
 			Quote.find({$or : [{quote: expr}, {_id: (idmatch ? idmatch[0] : null)}]}, function(err, results) 
 				{
 					if(err) return console.error(err);
