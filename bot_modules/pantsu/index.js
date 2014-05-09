@@ -82,7 +82,7 @@ function pantsuCommand(irc, from, to, url)
 				oauth.access_token = res.access_token;
 				oauth.expire_time = Date.now() + (res.expires_in * 1000);
 
-				uploadImage(commands[0], function(res)
+				uploadImage(url, function(res)
 					{
 						if(res.success)
 						{
@@ -98,7 +98,7 @@ function pantsuCommand(irc, from, to, url)
 	}
 	else
 	{
-		uploadImage(commands[0], function(res)
+		uploadImage(url, function(res)
 			{
 				if(res.success)
 				{
