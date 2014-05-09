@@ -31,7 +31,7 @@ function pantsuCommand(irc, from, to, url)
 	}
 	else
 	{
-		imgur.uploadImage(url, oauth.album_id, function(res)
+		imgur.uploadImage(url, oauth.album_id, oauth.access_token, function(res)
 			{
 				if(res.success)
 				{
