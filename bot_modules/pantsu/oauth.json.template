@@ -1,0 +1,9 @@
+{
+	"client_id" : "",
+	"client_secret" : "",
+	"refresh_token" : "",
+	"access_token" : null,
+	"expire_time" : null,
+
+	"album_id" : ""
+}
