@@ -20,6 +20,11 @@ function pantsuCommand(irc, from, to, url)
 						{
 							irc.say(utils.reply(from,to), "Image uploaded " + res.data.link + " - Full album at http://imgur.com/a/" + oauth.album_id );
 						}
+						else if(res.status == 403)
+						{
+							oauth.expire_time = 0;
+							return pantsuCommand(irc, from, to, url);
+						}
 						else
 						{
 							irc.say(utils.reply(from,to), "Upload failed: " + res.data.error);
@@ -36,6 +41,11 @@ function pantsuCommand(irc, from, to, url)
 				if(res.success)
 				{
 					irc.say(utils.reply(from,to), "Image uploaded " + res.data.link + " - Full album at http://imgur.com/a/" + oauth.album_id);
+				}
+				else if(res.status == 403)
+				{
+					oauth.expire_time = 0;
+					return pantsuCommand(irc, from, to, url);
 				}
 				else
 				{
