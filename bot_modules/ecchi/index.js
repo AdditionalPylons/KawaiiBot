@@ -3,8 +3,8 @@ var imgur = require('imgur');
 
 var oauth = require(__dirname + '/oauth.json');
 
-function pantsuCommand(irc, from, to, url)
-{
+
+function ecchiCommand (irc, from, to, url) {
 	if(oauth.access_token == null || oauth.expire_time < Date.now())
 	{
 		imgur.requestAccessToken(oauth.refresh_token, oauth.client_id, oauth.client_secret, function(res)
@@ -46,8 +46,7 @@ function pantsuCommand(irc, from, to, url)
 	}
 }
 
-function pantsuHandler (irc, from, to, text, message)
-{
+function ecchiHandler (irc, from, to, text, message) {
 	var commands = utils.splitText(text);
 	if(commands.length > 0)
 	{
@@ -55,7 +54,7 @@ function pantsuHandler (irc, from, to, text, message)
 		{
 			if(res && (res.permissions & Access.AccessEnum.USECOMMANDS))
 			{
-				pantsuCommand(irc, from, to, commands[0]);
+				ecchiCommand(irc, from, to, commands[0]);
 			}
 			else
 			{
@@ -74,10 +73,5 @@ var Access = null;
 exports.init = function(cc)
 {
 	Access = cc.getModule('access');
-	cc.registerCommand('.pantsu', pantsuHandler);
-}
-
-exports.destroy = function(cc)
-{
-	cc.unregisterCommand('.pantsu', pantsuHandler);
+	cc.registerCommand('.ecchi', ecchiHandler);
 }

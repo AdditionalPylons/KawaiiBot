@@ -38,7 +38,7 @@ var config =
 
 var irc = require("irc");
 
-var moduleList = ['access', 'quotes', 'pantsu'];
+var moduleList = ['access', 'quotes', 'pantsu', 'ecchi'];
 // i should fix this
 
 var bot = new irc.Client(config.server, config.botName,{
