@@ -31,9 +31,9 @@ var utils = require('utils');
 
 var config = 
 {
-	channels: ["#bots"],
+	channels: ["#flux"],
 	server: "irc.flux.cd",
-	botName: "LocalBot"
+	botName: "KawaiiBot"
 }
 
 var irc = require("irc");
