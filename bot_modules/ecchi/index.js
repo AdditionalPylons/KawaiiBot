@@ -24,7 +24,7 @@ function ecchiCommand (irc, from, to, url)
 						else if(res.status == 403)
 						{
 							oauth.expire_time = 0;
-							return pantsuCommand(irc, from, to, url);
+							return ecchiCommand(irc, from, to, url);
 						}
 						else
 						{
@@ -46,7 +46,7 @@ function ecchiCommand (irc, from, to, url)
 				else if(res.status == 403)
 				{
 					oauth.expire_time = 0;
-					return pantsuCommand(irc, from, to, url);
+					return ecchiCommand(irc, from, to, url);
 				}
 				else
 				{
