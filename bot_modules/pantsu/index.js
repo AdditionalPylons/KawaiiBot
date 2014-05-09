@@ -91,6 +91,7 @@ function pantsuCommand(irc, from, to, url)
 						else
 						{
 							irc.say(utils.reply(from,to), "Upload failed");
+							console.log("Upload failed: " + res);
 						}
 					});
 			}
@@ -107,6 +108,7 @@ function pantsuCommand(irc, from, to, url)
 				else
 				{
 					irc.say(utils.reply(from,to), "Upload failed");
+					console.log("Upload failed: " + res);
 				}
 			});
 	}
