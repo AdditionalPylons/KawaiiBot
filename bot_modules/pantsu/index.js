@@ -18,7 +18,7 @@ function pantsuCommand(irc, from, to, url)
 					{
 						if(res.success)
 						{
-							irc.say(utils.reply(from,to), "Image uploaded " + res.data.link + " - Full album at http://imgur.com/a/" + oauth.album_id );
+							irc.notice(from, "Image uploaded " + res.data.link + " - Full album at http://imgur.com/a/" + oauth.album_id );
 						}
 						else if(res.status == 403)
 						{
@@ -27,7 +27,7 @@ function pantsuCommand(irc, from, to, url)
 						}
 						else
 						{
-							irc.say(utils.reply(from,to), "Upload failed: " + res.data.error);
+							irc.notice(from, "Upload failed: " + res.data.error);
 							console.log("Upload failed: " + JSON.stringify(res));
 						}
 					});
@@ -40,7 +40,7 @@ function pantsuCommand(irc, from, to, url)
 			{
 				if(res.success)
 				{
-					irc.say(utils.reply(from,to), "Image uploaded " + res.data.link + " - Full album at http://imgur.com/a/" + oauth.album_id);
+					irc.notice(from, "Image uploaded " + res.data.link + " - Full album at http://imgur.com/a/" + oauth.album_id);
 				}
 				else if(res.status == 403)
 				{
@@ -49,7 +49,7 @@ function pantsuCommand(irc, from, to, url)
 				}
 				else
 				{
-					irc.say(utils.reply(from,to), "Upload failed: " + res.data.error);
+					irc.notice(from, "Upload failed: " + res.data.error);
 					console.log("Upload failed: " + JSON.stringify(res));
 				}
 			});
