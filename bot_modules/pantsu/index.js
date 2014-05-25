@@ -9,7 +9,7 @@ function pantsuCommand(irc, from, to, url)
 	{
 		imgur.requestAccessToken(oauth.refresh_token, oauth.client_id, oauth.client_secret, function(res)
 		{
-			if(res)
+			if(res && res.success)
 			{
 				oauth.access_token = res.access_token;
 				oauth.expire_time = Date.now() + (res.expires_in * 1000);
@@ -31,6 +31,10 @@ function pantsuCommand(irc, from, to, url)
 							console.log("Upload failed: " + JSON.stringify(res));
 						}
 					});
+			}
+			else
+			{
+				irc.notice(from, "Upload failed: " + res.data.error);
 			}
 		});
 	}
