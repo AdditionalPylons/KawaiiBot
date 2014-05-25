@@ -10,7 +10,7 @@ function ecchiCommand (irc, from, to, url)
 	{
 		imgur.requestAccessToken(oauth.refresh_token, oauth.client_id, oauth.client_secret, function(res)
 		{
-			if(res && res.success)
+			if(res && res.access_token)
 			{
 				oauth.access_token = res.access_token;
 				oauth.expire_time = Date.now() + (res.expires_in * 1000);
