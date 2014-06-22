@@ -32,7 +32,7 @@ var utils = require('utils');
 var config = 
 {
 	channels: ["#flux"],
-	server: "irc.flux.cd",
+	server: "irc.phusion.io",
 	botName: "KawaiiBot"
 }
 
