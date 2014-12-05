@@ -245,7 +245,7 @@ var bootstrap = function()
 		{
 			JoinHooks[i](bot, channel, nick, message);
 		}
-	}
+	});
 
 	bot.addListener('error', function(message) {
     	console.log('error: ', message);
