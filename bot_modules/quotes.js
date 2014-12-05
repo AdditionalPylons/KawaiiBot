@@ -111,7 +111,7 @@ var deleteQuoteHandler = function(irc, from, to, text, message)
 	var commands = utils.splitText(text);
 	Access.userRegistration(message.user, message.host, function(access)
 	{
-		if(access && (access.permissions & Access.AccessEnum.USECOMMANDS))
+		if(access && (access.permissions & Access.AccessEnum.USECOMMANDS) && commands.length > 0)
 		{
 			var id = commands[0].match(/[0-9]+$/)[0];
 			if(id != null)

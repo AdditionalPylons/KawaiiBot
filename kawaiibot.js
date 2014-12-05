@@ -25,7 +25,7 @@ var config =
 
 var irc = require("irc");
 
-var moduleList = ['access', 'quotes', 'pantsu', 'ecchi'];
+var moduleList = ['access', 'quotes', 'pantsu', 'ecchi', 'youtube', 'austin'];
 // i should fix this
 
 var bot = new irc.Client(config.server, config.botName,{
@@ -131,6 +131,8 @@ var RegisteredCommands =
 	'.commands' : listCommandsHandler
 }
 
+var MessageHooks = [];
+
 
 var CommandCenter = 
 {
@@ -166,6 +168,10 @@ var CommandCenter =
 	{
 		var idx = RegisteredCommands[command].indexOf(callback);
 		RegisteredCommands[command].splice(idx, 1);
+	},
+	hookMessage: function(callback)
+	{
+		MessageHooks.push(callback);
 	}
 }
 
@@ -183,6 +189,10 @@ var bootstrap = function()
 	{
 		try
 		{
+			for (var i = MessageHooks.length - 1; i >= 0; i--) {
+				MessageHooks[i](bot, from, to, text, message);
+			};
+
 			var commands = text.split(" ");
 			var handler = RegisteredCommands[commands[0]];
 			if(handler != null)
