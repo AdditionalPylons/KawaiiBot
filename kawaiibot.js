@@ -11,19 +11,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
   	// yay!
   	console.log("mongoose loaded");
-  	process.argv.forEach(function(val,index,array) {
-  		if(index == 2)
-  		{
-  			if(val == "register")
-  			{
-  				var axx = require('./bot_modules/access');
-  				axx.registerUser(array[3], array[4], axx.AccessEnum.ADMIN | axx.AccessEnum.USECOMMANDS | axx.AccessEnum.EDITUSERS, null, function(){
-  					console.log("Seeded root user");
-  				});
-  				return;
-  			}
-  		}
-  	});
   	bootstrap();
 });
 
@@ -194,21 +181,28 @@ var bootstrap = function()
 
 	bot.addListener("message", function(from, to, text, message)
 	{
-		var commands = text.split(" ");
-		var handler = RegisteredCommands[commands[0]];
-		if(handler != null)
+		try
 		{
-			if(handler instanceof Array)
+			var commands = text.split(" ");
+			var handler = RegisteredCommands[commands[0]];
+			if(handler != null)
 			{
-				for (var i = 0; i < handler.length; ++i) {
-					var func = handler[i];
-					func(bot, from, to, text, message);
-				};
+				if(handler instanceof Array)
+				{
+					for (var i = 0; i < handler.length; ++i) {
+						var func = handler[i];
+						func(bot, from, to, text, message);
+					};
+				}
+				else if(handler instanceof Function)
+				{
+					handler(bot,from,to,text,message);
+				}
 			}
-			else if(handler instanceof Function)
-			{
-				handler(bot,from,to,text,message);
-			}
+		}
+		catch(e)
+		{
+			console.log(e);
 		}
 	});
 
