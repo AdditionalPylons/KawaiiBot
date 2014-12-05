@@ -14,13 +14,25 @@ function findSummon(irc, from, to, text, message)
 	}
 }
 
+function greetAustin (irc, channel, nick, message) {
+	var austinregex = /(Annihilates|Austin)/ig;
+	if(austinregex.test(nick))
+	{
+		irc.say(channel, "Summoning complete");
+	}
+}
+
 exports.init = function(cc)
 {
 	cc.registerCommand('.summon', summon)
 	cc.hookMessage(findSummon);
+	cc.hookJoin(greetAustin);
 }
 
 exports.destroy = function(cc)
 {
 	// unregister
+	cc.unregister('.summon');
+	cc.unhookMessage(findSummon);
+	cc.unhookJoin(greetAustin);
 }

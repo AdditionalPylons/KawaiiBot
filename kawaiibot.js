@@ -132,6 +132,7 @@ var RegisteredCommands =
 }
 
 var MessageHooks = [];
+var JoinHooks = [];
 
 
 var CommandCenter = 
@@ -172,6 +173,28 @@ var CommandCenter =
 	hookMessage: function(callback)
 	{
 		MessageHooks.push(callback);
+	},
+	unhookMessage: function(callback)
+	{
+		for (var i = MessageHooks.length - 1; i >= 0; i--) {
+			if(MessageHooks[i] == callback)
+			{
+				MessageHooks.splice(i, 1);	
+			}
+		};
+	},
+	hookJoin: function(callback)
+	{
+		JoinHooks.push(callback);
+	},
+	unhookJoin: function(callback)
+	{
+		for (var i = JoinHooks.length - 1; i >= 0; i--) {
+			if(JoinHooks[i] == callback)
+			{
+				JoinHooks.splice(i, 1);
+			}
+		};
 	}
 }
 
@@ -215,6 +238,14 @@ var bootstrap = function()
 			console.log(e);
 		}
 	});
+
+	bot.on('join', function(channel, nick, message)
+	{
+		for(var i = JoinHooks.length -1; i >=0; i--)
+		{
+			JoinHooks[i](bot, channel, nick, message);
+		}
+	}
 
 	bot.addListener('error', function(message) {
     	console.log('error: ', message);

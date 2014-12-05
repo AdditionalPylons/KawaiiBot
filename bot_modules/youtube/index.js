@@ -20,8 +20,8 @@ function parseYoutube(irc, replyTarget, text)
 		 		var obj = JSON.parse(data);
 		 		if(obj != null && obj.items != null && obj.items.length > 0)
 		 		{
-		 			irc.say(replyTarget, "\x02YouTube:\x02 " + obj.items[0].snippet.title + " | \x02" + obj.items[0].statistics.viewCount + "\x02 views | \x02\x033" + obj.items[0].statistics.likeCount 
-		 				+ "\x03\x02 likes | \x02\x034" + obj.items[0].statistics.dislikeCount + "\x03\x02 dislikes");
+		 			irc.say(replyTarget, "\x02YouTube:\x02 " + obj.items[0].snippet.title + " | \x02" + obj.items[0].statistics.viewCount + "\x02 views |\x02\x033 " + obj.items[0].statistics.likeCount 
+		 				+ "\x03\x02 likes |\x02\x034 " + obj.items[0].statistics.dislikeCount + "\x03\x02 dislikes");
 		 		}
 		 	});
 		}).on('error', function(e) {
