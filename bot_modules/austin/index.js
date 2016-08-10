@@ -1,4 +1,4 @@
-var regex = /((WHERE'S|(WHERE IS)){1} (AUSTIN|ANNIHILATES){1})+/ig;
+var regex = /((WHERE'S|(WHERE IS)|WHERES){1} (ANNI|AUTISM|AUSTIN|ANNIHILATES){1})+/i;
 
 function summon(irc, from, to, text, message)
 {
@@ -15,7 +15,7 @@ function findSummon(irc, from, to, text, message)
 }
 
 function greetAustin (irc, channel, nick, message) {
-	var austinregex = /(Annihilates|Austin)/ig;
+	var austinregex = /(Annihilates|Austin|Anni)/i;
 	if(austinregex.test(nick))
 	{
 		irc.say(channel, "Summoning complete");
