@@ -4,8 +4,6 @@
 	"version": "0.0.1",
 	"private": true,
 	"dependencies": {
-		"irc": "0.x",
-		"mongoose": "3.x.x",
-		"mongoose-auto-increment": "3.x.x"
+		"irc": "0.x"
 	}
 }

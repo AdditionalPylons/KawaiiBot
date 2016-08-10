@@ -1,20 +1,4 @@
-var mongoose = require('mongoose');
-var autoIncrement = require('mongoose-auto-increment');
-
-mongoose.connect('mongodb://localhost/nightbot');
-
-var db = mongoose.connection;
-
-autoIncrement.initialize(db);
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-  	// yay!
-  	console.log("mongoose loaded");
-  	bootstrap();
-});
-
-var utils = require('utils');
+var utils = require('./lib/utils');
 
 var config = 
 {
@@ -25,7 +9,7 @@ var config =
 
 var irc = require("irc");
 
-var moduleList = ['access', 'quotes', 'pantsu', 'ecchi', 'youtube', 'austin'];
+var moduleList = ['youtube', 'austin'];
 // i should fix this
 
 var bot = new irc.Client(config.server, config.botName,{
@@ -251,3 +235,5 @@ var bootstrap = function()
     	console.log('error: ', message);
 	});
 }
+
+bootstrap();

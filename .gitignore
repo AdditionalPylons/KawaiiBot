@@ -3,6 +3,7 @@ node_modules/mongoose
 node_modules/mongoose-auto-increment
 bot_modules/pantsu/oauth.json
 bot_modules/ecchi/oauth.json
+node_modules
 
 #################
 ## Eclipse
