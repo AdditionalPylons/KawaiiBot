@@ -1,15 +1,30 @@
 import { Client, IClientOpts } from "irc";
-import { Plugin, PluginConstructor, IJoinHandler, IMessageHandler, EventHandler, Helpers} from "./plugins/plugin";
+import { Plugin, PluginConstructor, ICommandHandler, IJoinHandler, IMessageHandler, EventHandler, Helpers} from "./plugins/plugin";
 import { Youtube } from "./plugins/youtube/youtube";
+import { Austin } from "./plugins/austin/austin";
 export class Bot {
     private plugins:Array<Plugin>;
+    private commands: Map<string, ICommandHandler>;
     readonly client: Client;
     constructor(server:string, name:string, options?:IClientOpts, ...plugins: PluginConstructor[]) {
         this.client = new Client(server, name, options);
+        this.plugins = new Array<Plugin>();
+        this.commands = new Map<string, ICommandHandler>();
         this.client.addListener("message", (from:string, to:string, text:string, message:string) => {
             for(let p of this.plugins) {
                 if(Helpers.isMessageHandler(p)) {
                     p.handleMessage(this.client, from, to, text);
+                }
+            }
+            let parts = text.split(" ");
+            if(parts.length > 0) {
+                let cmd = parts[0];
+                if(this.commands.has(cmd)) {
+                    let handler = this.commands.get(cmd);
+                    if(handler) {
+                        parts.splice(0, 1);
+                        handler.handleCommand(this.client, from, to, cmd, parts.join(" "));
+                    }
                 }
             }
         });
@@ -19,13 +34,12 @@ export class Bot {
         this.client.addListener("error", (message:string) => {
             console.log('error: ', message);
         });
-        this.plugins = new Array<Plugin>();
         for(let p of plugins) {
             this.loadPlugin(p);
         }
     }
-    private commands: Map<string, IMessageHandler>;
-    private registerCommand(cmd:string, handler:IMessageHandler):boolean {
+
+    private registerCommand(cmd:string, handler:ICommandHandler):boolean {
         if(this.commands.has(cmd)) {
             return false;
         }
@@ -36,6 +50,11 @@ export class Bot {
     private loadPlugin(ctor:PluginConstructor) {
         let plugin:Plugin = new ctor(this);
         this.plugins.push(plugin);
+        if(Helpers.isCommandHandler(plugin)) {
+            for(let cmd of plugin.commands) {
+                this.registerCommand(cmd, plugin);
+            }
+        }
         plugin.init();
     }
 
@@ -53,4 +72,5 @@ export class Bot {
     // }
 }
 
-let kawaiibot = new Bot("irc.memers.co", "KawaiiBot", {channels:["#flux"], autoConnect: true, autoRejoin: true}, Youtube);
+let kawaiibot = new Bot("irc.memers.co", "GNU|Dad", {channels:["#flux"], autoConnect: true, autoRejoin: true}, 
+    Youtube, Austin);

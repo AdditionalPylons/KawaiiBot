@@ -50,8 +50,4 @@ export class Youtube implements IPlugin, IMessageHandler {
             parseYoutubeLink(w);
         }
     }
-
-    static findYoutubeURLs(text:string) {
-       
-    }
 }

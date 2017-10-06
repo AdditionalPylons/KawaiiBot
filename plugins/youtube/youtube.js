@@ -40,8 +40,6 @@ class Youtube {
             parseYoutubeLink(w);
         }
     }
-    static findYoutubeURLs(text) {
-    }
 }
 exports.Youtube = Youtube;
 //# sourceMappingURL=youtube.js.map

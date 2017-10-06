@@ -6,6 +6,10 @@ var Helpers;
         return plugin.handleMessage !== undefined;
     }
     Helpers.isMessageHandler = isMessageHandler;
+    function isCommandHandler(plugin) {
+        return plugin.handleCommand !== undefined;
+    }
+    Helpers.isCommandHandler = isCommandHandler;
     function isJoinHandler(plugin) {
         return plugin.handleJoin !== undefined;
     }
