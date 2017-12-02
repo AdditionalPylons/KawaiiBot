@@ -1,4 +1,4 @@
-var regex = /(?:youtu\.be\/|youtube.com\/(?:watch\?.*\bv=|embed\/|v\/)|ytimg\.com\/vi\/)(.+?)(?:[^-_a-zA-Z0-9]|$)/;
+var regex = /(?:youtu\.be\/|youtube.com\/(?:watch\?.*\bv=|embed\/|v\/))(.+?)(?:[^-_a-zA-Z0-9]|$)/;
 var api = "" + require(__dirname + '/api.json').key + "&part=snippet,contentDetails,statistics,status";
 var https = require('https');
 

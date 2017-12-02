@@ -1,9 +1,13 @@
 {
-	"name": "Nightbot",
-	"description": "IRC Bot",
-	"version": "0.0.1",
-	"private": true,
-	"dependencies": {
-		"irc": "0.x"
-	}
+  "name": "kawaiibot",
+  "description": "IRC Bot",
+  "version": "2.0.0",
+  "private": true,
+  "dependencies": {
+    "@types/irc": "^0.3.32",
+    "irc": "0.x"
+  },
+  "devDependencies": {
+    "typescript": "^2.5.3"
+  }
 }
